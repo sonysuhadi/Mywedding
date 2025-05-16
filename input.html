@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Buat Undangan</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      padding: 20px;
+      background: #ffe4e1;
+    }
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #b33a3a;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    textarea {
+      resize: vertical;
+    }
+    button {
+      background-color: #ff6f61;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #b33a3a;
+    }
+    .preview, .link-share {
+      max-width: 400px;
+      margin: 20px auto;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      color: #5a2a3b;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+    .link-share input {
+      width: 80%;
+      padding: 8px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-right: 8px;
+    }
+    .link-share button {
+      width: auto;
+      padding: 8px 14px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Form Undangan</h2>
+    <form id="inviteForm">
+      <input type="text" id="pria" placeholder="Nama Mempelai Pria" required>
+      <input type="text" id="wanita" placeholder="Nama Mempelai Wanita" required>
+      <input type="date" id="tanggal" required>
+      <input type="time" id="waktu" required>
+      <textarea id="lokasi" placeholder="Lokasi Pernikahan (opsional)" rows="2"></textarea>
+      <label>Pilih Gambar Background:</label>
+      <input type="file" id="bgImageFile" accept="image/*" required>
+      <label for="audio">Upload Suara Pengantin (MP3/WAV):</label>
+      <input type="file" id="audio" accept="audio/*" required>
+      <button type="submit">Buat Undangan</button>
+    </form>
+  </div>
+
+  <div class="preview" id="preview" style="display:none;">
+    <h3>Preview Undangan</h3>
+    <p id="previewText"></p>
+  </div>
+
+  <div class="link-share" id="linkShare" style="display:none; text-align:center;">
+    <label for="shareUrl">Link Undangan untuk Diberikan ke Penerima:</label><br>
+    <input type="text" id="shareUrl" readonly />
+    <button onclick="copyLink()">Salin Link</button>
+  </div>
+
+  <script>
+    const form = document.getElementById('inviteForm');
+    const preview = document.getElementById('preview');
+    const previewText = document.getElementById('previewText');
+    const linkShare = document.getElementById('linkShare');
+    const shareUrlInput = document.getElementById('shareUrl');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const pria = form.pria.value.trim();
+      const wanita = form.wanita.value.trim();
+      const tanggal = form.tanggal.value;
+      const waktu = form.waktu.value;
+      const lokasi = form.lokasi.value.trim();
+      const bgFile = document.getElementById('bgImageFile').files[0];
+
+      document.getElementById("formUndangan").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const audioInput = document.getElementById("audio");
+      const file = audioInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const audioUrl = event.target.result;
+          localStorage.setItem("audioUrl", audioUrl);
+          window.location.href = "call.html";
+        };
+        reader.readAsDataURL(file);
+      } else {
+        alert("Mohon unggah file audio terlebih dahulu.");
+      }
+    });
+
+      if (!bgFile) {
+        alert('Silakan pilih gambar background.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const bgBase64 = event.target.result;
+
+        // Simpan data ke localStorage
+        localStorage.setItem("namaPria", pria);
+        localStorage.setItem("namaWanita", wanita);
+        localStorage.setItem("tanggal", tanggal);
+        localStorage.setItem("waktu", waktu);
+        localStorage.setItem("lokasi", lokasi);
+        localStorage.setItem("bgImage", bgBase64);
+
+        // Preview
+        previewText.innerHTML = `
+          Dengan bahagia kami mengundang Anda ke pernikahan:<br>
+          <strong>${pria}</strong> &hearts; <strong>${wanita}</strong><br><br>
+          📅 Tanggal: <strong>${tanggal}</strong><br>
+          ⏰ Waktu: <strong>${waktu}</strong><br>
+          ${lokasi ? `📍 Lokasi: <strong>${lokasi}</strong>` : ''}
+        `;
+        preview.style.display = 'block';
+
+        // Link ke tampilan.html
+        const baseUrl = window.location.origin + window.location.pathname.replace('input.html', 'tampilan.html');
+        shareUrlInput.value = baseUrl;
+        linkShare.style.display = 'block';
+      };
+
+      reader.readAsDataURL(bgFile);
+      
+    });
+
+    function copyLink() {
+      shareUrlInput.select();
+      shareUrlInput.setSelectionRange(0, 99999);
+      document.execCommand('copy');
+      alert('Link undangan telah disalin!');
+    }
+  </script>
+</body>
+</html>
