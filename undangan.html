@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Undangan Chat</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #fff;
+      font-size: 14px;
+    }
+
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .header {
+      background-color: #d86c8b;
+      color: white;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .header img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 8px;
+    }
+
+    .group-info {
+      flex: 1;
+    }
+
+    .group-name {
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    .group-members {
+      font-size: 11px;
+      opacity: 0.9;
+    }
+
+    .icons {
+      display: flex;
+      gap: 10px;
+      font-size: 18px;
+    }
+
+    .icon-button {
+      cursor: pointer;
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 8px;
+      background-image: url('https://i.ibb.co/hYy9cR7/bg-wedding-chat.png');
+      background-size: cover;
+    }
+
+    .chat-bubble {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 8px;
+      max-width: 85%;
+    }
+
+    .received {
+      margin-right: auto;
+    }
+
+    .sent {
+      margin-left: auto;
+      flex-direction: row-reverse;
+    }
+
+    .chat-bubble img {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 6px;
+    }
+
+    .sent img {
+      margin-left: 6px;
+      margin-right: 0;
+    }
+
+    .bubble-content {
+      background-color: #fef2f4;
+      border: 1px solid #f3d1dc;
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 13px;
+      line-height: 1.4;
+      white-space: pre-line;
+    }
+
+    .sent .bubble-content {
+      background-color: #ffe4ec;
+    }
+
+    .sender {
+      font-weight: bold;
+      margin-bottom: 4px;
+      color: #c8507e;
+    }
+
+    .footer {
+      display: flex;
+      padding: 8px;
+      border-top: 1px solid #f3d5d5;
+      background: #fdf1f5;
+    }
+
+    .footer input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #f3d5d5;
+      border-radius: 20px;
+      font-size: 14px;
+    }
+
+    .footer button {
+      margin-left: 8px;
+      padding: 8px 12px;
+      background-color: #d86c8b;
+      border: none;
+      color: white;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .profil-link {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .group-name {
+        font-size: 14px;
+      }
+
+      .group-members {
+        font-size: 10px;
+      }
+
+      .footer input {
+        font-size: 13px;
+      }
+
+      .footer button {
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container" role="main">
+    <div class="header">
+      <img src="https://i.pinimg.com/736x/30/df/be/30dfbef5cf6cd85da18b31a993a94c89.jpg" alt="Profil Grup" />
+      <div class="group-info">
+        <div class="group-name">Warga Bumi</div>
+        <div class="group-members">Pak RT, Bu Dewi, Rizal, Adinda, dan lainnya</div>
+      </div>
+      <div class="icons">
+        <div class="icon-button" id="callBtn">📞</div>
+        <div class="icon-button" id="videoCallBtn">📹</div>
+      </div>
+    </div>
+
+    <div class="messages" id="messages"></div>
+
+    <form class="footer" onsubmit="sendMessage(event)">
+      <input type="text" id="userInput" placeholder="Tulis pesan..." required autocomplete="off" />
+      <button type="submit">Kirim</button>
+    </form>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const pria = urlParams.get('pria') || 'Pria';
+    const wanita = urlParams.get('wanita') || 'Wanita';
+    const tanggal = urlParams.get('tanggal') || '2025-01-01';
+    const waktu = urlParams.get('waktu') || '10:00';
+    const lokasi = urlParams.get('lokasi') || 'Akan dikirim menyusul';
+
+    const profilUrl = `profil-mempelai.html?pria=${encodeURIComponent(pria)}&wanita=${encodeURIComponent(wanita)}`;
+
+    const messages = [
+      {
+        sender: "Pak RT",
+        avatar: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+        text: "Halo warga wargaku, saya ingin memberitahukan bahwa akan ada pernikahan warga kita.",
+        type: "received"
+      },
+      {
+        sender: "Pak RT",
+        avatar: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+        text: `Dengan bahagia kami mengundang Anda ke pernikahan:\n🧑 ${pria} ❤️ 👩 ${wanita}`,
+        type: "received"
+      },
+      {
+        sender: "Pak RT",
+        avatar: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+        text: `Resepsi:\n 📅 Tanggal: ${tanggal}\n⏰ Waktu: ${waktu} WIB\n📍 Lokasi: ${lokasi}`,
+        type: "received"
+      },
+      {
+        sender: "Pak RT",
+        avatar: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
+        text: "Jangan lupa hadir ya Bapak/ibu sekalian.",
+        type: "received"
+      },
+      {
+        sender: "Bu Dewi",
+        avatar: "https://cdn-icons-png.flaticon.com/512/2507/2507674.png",
+        text: "Terima kasih infonya Pak Rete🙏",
+        type: "received"
+      },
+    ];
+
+    const messagesContainer = document.getElementById('messages');
+
+    function renderMessages(msgs) {
+      messagesContainer.innerHTML = '';
+      let lastSender = null;
+
+      msgs.forEach((msg) => {
+        const bubble = document.createElement('div');
+        bubble.className = `chat-bubble ${msg.type}`;
+
+        if (msg.sender !== lastSender) {
+          bubble.innerHTML = `
+            <img src="${msg.avatar}" alt="Avatar ${msg.sender}">
+            <div class="bubble-content">
+              <div class="sender">${msg.sender}</div>
+              <div>${msg.text.replace(/\n/g, "<br>")}</div>
+            </div>
+          `;
+          lastSender = msg.sender;
+        } else {
+          bubble.innerHTML = `
+            <div class="bubble-content" style="margin-left: 34px;">
+              <div>${msg.text.replace(/\n/g, "<br>")}</div>
+            </div>
+          `;
+        }
+
+        messagesContainer.appendChild(bubble);
+      });
+
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    renderMessages(messages);
+
+    function sendMessage(event) {
+      event.preventDefault();
+      const input = document.getElementById('userInput');
+      const text = input.value.trim();
+      if (!text) return;
+      const userMsg = {
+        sender: "Anda",
+        avatar: "https://cdn-icons-png.flaticon.com/512/2922/2922561.png",
+        text,
+        type: "sent"
+      };
+      messages.push(userMsg);
+      renderMessages(messages);
+      input.value = '';
+    }
+
+    // Navigasi tombol
+    document.getElementById('callBtn').onclick = () => window.location.href = 'call.html';
+    document.getElementById('videoCallBtn').onclick = () => window.location.href = 'video-call.html';
+
+    // Deteksi scroll ke bawah untuk redirect
+    messagesContainer.addEventListener('scroll', () => {
+      const { scrollTop, scrollHeight, clientHeight } = messagesContainer;
+      if (scrollTop + clientHeight >= scrollHeight * 0.9) {
+        window.location.href = profilUrl;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Buat Undangan</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      padding: 15px 10px;
+      background: linear-gradient(135deg, #f9f3f3 0%, #fcefee 100%);
+      margin: 0;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 400px;
+      width: 100%;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+    }
+    h2 {
+      text-align: center;
+      color: #b33a3a;
+      margin-top: 0;
+      font-size: 1.8rem;
+    }
+    input, textarea, button, label {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+    button {
+      background-color: #ff6f61;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 18px;
+      border-radius: 12px;
+      transition: background-color 0.3s ease;
+    }
+    button:hover, button:focus {
+      background-color: #b33a3a;
+      outline: none;
+    }
+    .preview, .link-share {
+      max-width: 400px;
+      width: 100%;
+      margin: 20px auto;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      color: #5a2a3b;
+      font-size: 16px;
+      line-height: 1.5;
+      box-sizing: border-box;
+    }
+    .link-share input {
+      width: 75%;
+      padding: 10px 12px;
+      font-size: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-right: 8px;
+      font-family: inherit;
+    }
+    .link-share button {
+      width: auto;
+      padding: 10px 18px;
+      font-size: 15px;
+      border-radius: 8px;
+    }
+
+    /* Responsive untuk layar kecil */
+    @media (max-width: 480px) {
+      body {
+        padding: 12px 8px;
+      }
+      h2 {
+        font-size: 1.6rem;
+      }
+      input, textarea, button, label {
+        font-size: 15px;
+        padding: 10px 12px;
+        border-radius: 8px;
+      }
+      button {
+        font-size: 16px;
+        padding: 12px;
+      }
+      .preview, .link-share {
+        margin: 15px 10px;
+        font-size: 15px;
+        padding: 15px;
+      }
+      .link-share input {
+        width: 70%;
+        font-size: 14px;
+      }
+      .link-share button {
+        font-size: 14px;
+        padding: 10px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Form Undangan</h2>
+    <form id="inviteForm">
+      <!-- Data Umum -->
+      <input type="text" id="pria" placeholder="Nama Mempelai Pria" required>
+      <input type="text" id="ayahPria" placeholder="Nama Ayah Mempelai Pria" required>
+      <textarea id="alamatPria" placeholder="Alamat Mempelai Pria" rows="2" required></textarea>
+      <label>Foto Mempelai Pria:</label>
+      <input type="file" id="fotoPria" accept="image/*" required>
+
+      <input type="text" id="wanita" placeholder="Nama Mempelai Wanita" required>
+      <input type="text" id="ayahWanita" placeholder="Nama Ayah Mempelai Wanita" required>
+      <textarea id="alamatWanita" placeholder="Alamat Mempelai Wanita" rows="2" required></textarea>
+      <label>Foto Mempelai Wanita:</label>
+      <input type="file" id="fotoWanita" accept="image/*" required>
+
+      <!-- Detail Acara -->
+      <input type="date" id="tanggal" required>
+      <input type="time" id="waktu" required>
+      <textarea id="lokasi" placeholder="Lokasi Pernikahan (opsional)" rows="2"></textarea>
+
+      <!-- Background dan Audio -->
+      <label>Pilih Gambar Background:</label>
+      <input type="file" id="bgImageFile" accept="image/*" required>
+      <label for="audio">Upload Suara Pengantin (MP3/WAV):</label>
+      <input type="file" id="audio" accept="audio/*" required>
+
+      <button type="submit">Buat Undangan</button>
+    </form>
+  </div>
+
+  <div class="preview" id="preview" style="display:none;">
+    <h3>Preview Undangan</h3>
+    <p id="previewText"></p>
+  </div>
+
+  <div class="link-share" id="linkShare" style="display:none; text-align:center;">
+    <label for="shareUrl">Link Undangan untuk Diberikan ke Penerima:</label><br>
+    <input type="text" id="shareUrl" readonly />
+    <button onclick="copyLink()">Salin Link</button>
+  </div>
+
+  <script>
+    const form = document.getElementById('inviteForm');
+    const preview = document.getElementById('preview');
+    const previewText = document.getElementById('previewText');
+    const linkShare = document.getElementById('linkShare');
+    const shareUrlInput = document.getElementById('shareUrl');
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const pria = form.pria.value.trim();
+      const wanita = form.wanita.value.trim();
+      const ayahPria = form.ayahPria.value.trim();
+      const ayahWanita = form.ayahWanita.value.trim();
+      const alamatPria = form.alamatPria.value.trim();
+      const alamatWanita = form.alamatWanita.value.trim();
+      const tanggal = form.tanggal.value;
+      const waktu = form.waktu.value;
+      const lokasi = form.lokasi.value.trim();
+      const bgFile = document.getElementById('bgImageFile').files[0];
+      const audioFile = document.getElementById('audio').files[0];
+      const fotoPriaFile = document.getElementById('fotoPria').files[0];
+      const fotoWanitaFile = document.getElementById('fotoWanita').files[0];
+
+      if (!bgFile || !audioFile || !fotoPriaFile || !fotoWanitaFile) {
+        alert('Pastikan semua file telah diunggah.');
+        return;
+      }
+
+      const readFileAsBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      try {
+        const [bgBase64, audioBase64, fotoPriaBase64, fotoWanitaBase64] = await Promise.all([
+          readFileAsBase64(bgFile),
+          readFileAsBase64(audioFile),
+          readFileAsBase64(fotoPriaFile),
+          readFileAsBase64(fotoWanitaFile)
+        ]);
+
+        // Simpan ke localStorage
+        localStorage.setItem("namaPria", pria);
+        localStorage.setItem("ayahPria", ayahPria);
+        localStorage.setItem("alamatPria", alamatPria);
+        localStorage.setItem("fotoPria", fotoPriaBase64);
+
+        localStorage.setItem("namaWanita", wanita);
+        localStorage.setItem("ayahWanita", ayahWanita);
+        localStorage.setItem("alamatWanita", alamatWanita);
+        localStorage.setItem("fotoWanita", fotoWanitaBase64);
+
+        localStorage.setItem("tanggal", tanggal);
+        localStorage.setItem("waktu", waktu);
+        localStorage.setItem("lokasi", lokasi);
+        localStorage.setItem("bgImage", bgBase64);
+        localStorage.setItem("audioUrl", audioBase64);
+
+        // Tampilkan preview
+        previewText.innerHTML = `
+          Dengan bahagia kami mengundang Anda ke pernikahan:<br>
+          <strong>${pria}</strong> &hearts; <strong>${wanita}</strong><br><br>
+          📅 Tanggal: <strong>${tanggal}</strong><br>
+          ⏰ Waktu: <strong>${waktu}</strong><br>
+          ${lokasi ? `📍 Lokasi: <strong>${lokasi}</strong>` : ''}
+        `;
+        preview.style.display = 'block';
+
+        // Tampilkan link share
+        const baseUrl = window.location.origin + window.location.pathname.replace('input.html', 'tampilan.html');
+        shareUrlInput.value = baseUrl;
+        linkShare.style.display = 'block';
+      } catch (err) {
+        alert("Gagal membaca file. Silakan coba lagi.");
+        console.error(err);
+      }
+    });
+
+    function copyLink() {
+      shareUrlInput.select();
+      shareUrlInput.setSelectionRange(0, 99999);
+      document.execCommand('copy');
+      alert('Link undangan telah disalin!');
+    }
+  </script>
+</body>
+</html>

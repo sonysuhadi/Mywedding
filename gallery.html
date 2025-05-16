@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Galeri Foto Elegan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #f9f3f3 0%, #fcefee 100%);
+      font-family: 'Poppins', sans-serif;
+      color: #343a40;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      scroll-behavior: smooth;
+    }
+    body.visible {
+      opacity: 1;
+    }
+
+    h1 {
+      font-weight: 500;
+      font-size: 2.8rem;
+      margin-bottom: 40px;
+      letter-spacing: 0.06em;
+      color: #495057;
+      text-transform: uppercase;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .gallery-item {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1), 0 2px 6px rgba(0,0,0,0.06);
+      background: white;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.1);
+      z-index: 10;
+    }
+
+    .gallery-item img {
+      display: block;
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 16px;
+      transition: filter 0.3s ease;
+    }
+
+    .gallery-item:hover img {
+      filter: brightness(0.85);
+    }
+
+    .caption {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-weight: 500;
+      font-size: 1rem;
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+    }
+
+    .gallery-item:hover .caption {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 480px) {
+      .gallery-item img {
+        height: 160px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Album Kami</h1>
+  <div class="gallery">
+    <div class="gallery-item">
+      <img src="path_to_image1.jpg" alt="Foto 1" />
+      <div class="caption">Foto 1</div>
+    </div>
+    <div class="gallery-item">
+      <img src="path_to_image2.jpg" alt="Foto 2" />
+      <div class="caption">Foto 2</div>
+    </div>
+    <div class="gallery-item">
+      <img src="path_to_image3.jpg" alt="Foto 3" />
+      <div class="caption">Foto 3</div>
+    </div>
+    <div class="gallery-item">
+      <img src="path_to_image4.jpg" alt="Foto 4" />
+      <div class="caption">Foto 4</div>
+    </div>
+    <div class="gallery-item">
+      <img src="path_to_image5.jpg" alt="Foto 5" />
+      <div class="caption">Foto 5</div>
+    </div>
+    <div class="gallery-item">
+      <img src="path_to_image6.jpg" alt="Foto 6" />
+      <div class="caption">Foto 6</div>
+    </div>
+  </div>
+
+  <script>
+    // Fade in saat load
+    window.addEventListener('DOMContentLoaded', () => {
+      document.body.classList.add('visible');
+    });
+
+    let redirected = false;
+    function checkRedirect() {
+      if (redirected) return;
+      const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 10;
+      const atTop = window.scrollY <= 0;
+      if (nearBottom || atTop) {
+        redirected = true;
+        document.body.classList.remove('visible');
+        setTimeout(() => {
+          window.location.href = 'profil-mempelai.html';
+        }, 800);
+      }
+    }
+
+    window.addEventListener('scroll', checkRedirect);
+  </script>
+</body>
+</html>

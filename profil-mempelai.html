@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profil Mempelai</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #fff0f5, #fce4ec);
+      margin: 0;
+      padding: 0;
+      opacity: 0;
+      transition: opacity 1s ease;
+      min-height: 150vh; /* Biar ada ruang scroll */
+    }
+
+    body.visible {
+      opacity: 1;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #c2185b;
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .description {
+      color: #555;
+      font-size: 15px;
+      margin-bottom: 30px;
+    }
+
+    .profile-section {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .profile {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+      width: 300px;
+      transition: transform 0.3s ease;
+    }
+
+    .profile:hover {
+      transform: translateY(-5px);
+    }
+
+    .profile img {
+      border-radius: 50%;
+      width: 140px;
+      height: 140px;
+      object-fit: cover;
+      margin-bottom: 15px;
+      border: 4px solid #f8bbd0;
+    }
+
+    .profile-name {
+      font-size: 20px;
+      color: #ad1457;
+      font-weight: bold;
+    }
+
+    .profile-info {
+      font-size: 14px;
+      color: #666;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 600px) {
+      .profile {
+        width: 90%;
+      }
+
+      h1 {
+        font-size: 26px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Mempelai</h1>
+    <p class="description">Dengan segala hormat, kami mempersembahkan pasangan yang akan segera menikah.</p>
+    <div class="profile-section">
+      <div class="profile">
+        <img src="https://i.ibb.co/6XqTjWJ/bridegroom.jpg" alt="Mempelai Pria" />
+        <div class="profile-name" id="namaPria">Nama Pria</div>
+        <div class="profile-info" id="gelarPria">Gelar Pria</div>
+        <div class="profile-info">Putra dari</div>
+        <div class="profile-info" id="ortuPria">Ayah Pria</div>
+        <div class="profile-info" id="alamatPria">Alamat Pria</div>
+      </div>
+      <div class="profile">
+        <img src="https://i.ibb.co/YXJwBQB/bride.jpg" alt="Mempelai Wanita" />
+        <div class="profile-name" id="namaWanita">Nama Wanita</div>
+        <div class="profile-info" id="gelarWanita">Gelar Wanita</div>
+        <div class="profile-info">Putri dari</div>
+        <div class="profile-info" id="ortuWanita">Ayah Wanita</div>
+        <div class="profile-info" id="alamatWanita">Alamat Wanita</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Fade-in body
+    window.addEventListener('DOMContentLoaded', () => {
+      document.body.classList.add('visible');
+    });
+
+    // Isi data dari URL
+    const params = new URLSearchParams(window.location.search);
+    
+    document.getElementById("namaPria").textContent = params.get("pria") || "Nama Pria";
+    document.getElementById("gelarPria").textContent = params.get("gelarPria") || "Gelar Pria";
+    document.getElementById("ortuPria").textContent = params.get("ortuPria") || "Orang Tua Pria";
+    document.getElementById("alamatPria").textContent = params.get("alamatPria") || "Alamat Pria";
+
+    document.getElementById("namaWanita").textContent = params.get("wanita") || "Nama Wanita";
+    document.getElementById("gelarWanita").textContent = params.get("gelarWanita") || "Gelar Wanita";
+    document.getElementById("ortuWanita").textContent = params.get("ortuWanita") || "Orang Tua Wanita";
+    document.getElementById("alamatWanita").textContent = params.get("alamatWanita") || "Alamat Wanita";
+
+    // Scroll event untuk pindah ke gallery.html saat hampir ke bawah
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY || window.pageYOffset;
+      const windowHeight = window.innerHeight;
+      const docHeight = document.documentElement.scrollHeight;
+
+      // Jika sudah dekat 90% bagian bawah halaman, redirect ke gallery.html
+      if (scrollTop + windowHeight >= docHeight * 0.9) {
+        window.location.href = 'gallery.html';
+      }
+    });
+  </script>
+</body>
+</html>

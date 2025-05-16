@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Undangan Digital - Selamat Datang</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;700&display=swap');
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #f9f3f3 0%, #fcefee 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      color: #7b4b4b;
+      animation: fadeIn 1.2s ease;
+      overflow: hidden;
+    }
+
+    main {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 25px;
+      box-shadow: 0 15px 40px rgb(203 150 150 / 0.3);
+      max-width: 400px;
+      margin: auto;
+      margin-top: 60px;
+      text-align: center;
+      transform: translateY(30px);
+      opacity: 0;
+      animation: slideFade 1s ease forwards 0.5s;
+      transition: transform 0.8s ease;
+    }
+
+    h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 3rem;
+      margin-bottom: 0.2em;
+      color: #b33a3a;
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 1.8em;
+      color: #8b5c5c;
+    }
+
+    a.btn {
+      display: inline-block;
+      background: #b33a3a;
+      color: white;
+      padding: 15px 35px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 40px;
+      text-decoration: none;
+      box-shadow: 0 5px 15px rgb(179 58 58 / 0.6);
+      transition: all 0.4s ease;
+      cursor: pointer;
+    }
+
+    a.btn:hover {
+      background: #8b2b2b;
+      box-shadow: 0 8px 20px rgb(139 43 43 / 0.8);
+      transform: scale(1.05);
+    }
+
+    footer {
+      margin-top: auto;
+      background-color: #fff0f0;
+      padding: 20px 10px;
+      text-align: center;
+      font-size: 0.9rem;
+      border-top: 1px solid #f5d5d5;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards 1.5s;
+    }
+
+    footer .footer-links {
+      margin-bottom: 10px;
+    }
+
+    footer a {
+      color: #b33a3a;
+      text-decoration: none;
+      margin: 0 12px;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+      color: #8b2b2b;
+    }
+
+    @media (max-width: 480px) {
+      main {
+        margin: 30px 20px;
+        padding: 30px 20px;
+      }
+
+      footer a {
+        display: inline-block;
+        margin: 8px 5px;
+      }
+    }
+
+    /* Animasi Keyframes */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes slideFade {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Transisi Keluar */
+    .slide-up {
+      animation: slideOutUp 0.8s forwards;
+    }
+
+    @keyframes slideOutUp {
+      from {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main id="main">
+    <h1>Undangan Digital</h1>
+    <p>Buat undangan pernikahanmu dengan mudah dan cantik dalam hitungan menit!</p>
+    <a class="btn" onclick="mulaiBuatUndangan()">Buat Undangan Baru</a>
+  </main>
+
+  <footer>
+    <div class="footer-links">
+      <a href="bantuan.html">Bantuan</a>
+      <a href="tentang.html">Tentang Kami</a>
+      <a href="privasi.html">Privasi</a>
+    </div>
+    <div>&copy; 2025 Undangan Digital | dibuat oleh Sony Kurniawan Suhadi</div>
+  </footer>
+
+  <script>
+    function mulaiBuatUndangan() {
+      const mainEl = document.getElementById('main');
+      mainEl.classList.add('slide-up');
+
+      setTimeout(() => {
+        window.location.href = "input.html";
+      }, 800);
+    }
+  </script>
+
+</body>
+</html>
